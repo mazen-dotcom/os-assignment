@@ -21,16 +21,13 @@ public class Doctor extends Thread {
         try {
             while (!isInterrupted()) {
 
-                // 1) idle until a patient is available, then get assigned
                 Patient p = waitingRoom.getPatient();
                 System.out.println("Doctor " + doctorId
                         + " is assigned to P" + p.getPatientId() + ".");
 
-                // 2) try to get a treatment room for 3 seconds
                 boolean acquired = treatmentRooms.acquireRoom(doctorId, 3000);
 
                 if (!acquired) {
-                    // 3) send the patient back; the patient waits outside by himself
                     System.out.println("Doctor " + doctorId + " is sending P"
                             + p.getPatientId() + " back to the waiting room.");
                     sendBack(p);
@@ -38,7 +35,6 @@ public class Doctor extends Thread {
                     continue;
                 }
 
-                // 4) treatment
                 try {
                     System.out.println("Doctor " + doctorId
                             + " begins treating P" + p.getPatientId() + ".");
@@ -54,11 +50,10 @@ public class Doctor extends Thread {
                 allPatientsTreated.countDown();
             }
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // simulation is over
+            Thread.currentThread().interrupt(); 
         }
     }
 
-    // The patient re-enters in his own thread so the doctor is never blocked
     private void sendBack(Patient p) {
         Thread t = new Thread(() -> {
             try {
