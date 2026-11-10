@@ -1,7 +1,8 @@
+
 public class Patient extends Thread {
 
-    private int id;
-    private WaitingRoom waitingRoom;
+    private final int id;
+    private final WaitingRoom waitingRoom;
 
     public Patient(int id, WaitingRoom waitingRoom) {
         this.id = id;
@@ -23,10 +24,6 @@ public class Patient extends Thread {
         } catch (InterruptedException e) {
 
             Thread.currentThread().interrupt();
-
-            System.out.println(
-                "P" + id + " was interrupted while waiting."
-            );
         }
     }
 }
