@@ -44,10 +44,10 @@ public class WaitingRoom {
     }
 
     // Doctor takes a patient from the waiting room
-    public Patient getPatient() throws InterruptedException {
+    public Patient getPatient(int doctorid) throws InterruptedException {
 
         // Wait if there are no patients
-        availablePatients.acquire();
+        availablePatients.tryAcquire(3000);
 
         Patient p;
 
@@ -56,7 +56,7 @@ public class WaitingRoom {
             p = patients.poll();
 
             System.out.println(
-                "Doctor took P" + p.getPatientId()
+                "Doctor"+doctorid+ " took P" + p.getPatientId()
                 + " from the waiting room."
             );
         }

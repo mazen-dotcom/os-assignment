@@ -21,7 +21,7 @@ public class Doctor extends Thread {
         try {
             while (!isInterrupted()) {
 
-                Patient p = waitingRoom.getPatient();
+                Patient p = waitingRoom.getPatient(doctorId);
                 System.out.println("Doctor " + doctorId
                         + " is assigned to P" + p.getPatientId() + ".");
 
