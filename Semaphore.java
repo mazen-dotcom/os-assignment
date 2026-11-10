@@ -49,4 +49,22 @@ public class Semaphore {
         value--;
         return true;
     }
+
+    public synchronized boolean tryAcquire() {
+
+    if (value == 0) {
+        return false;
+    }
+
+    value--;
+    return true;
+}public synchronized boolean tryAcquire() {
+
+    if (value == 0) {
+        return false;
+    }
+
+    value--;
+    return true;
+}
 }
