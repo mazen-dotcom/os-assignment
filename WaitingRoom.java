@@ -1,12 +1,13 @@
+
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class WaitingRoom {
 
-    private Queue<Patient> patients;
+    private final Queue<Patient> patients;
 
-    private Semaphore emptySeats;
-    private Semaphore availablePatients;
+    private final Semaphore emptySeats;
+    private final Semaphore availablePatients;
 
     private final Object queueLock = new Object();
 
@@ -18,16 +19,21 @@ public class WaitingRoom {
         availablePatients = new Semaphore(0);
     }
 
-    // Patient enters the waiting room
     public void enter(Patient p) throws InterruptedException {
 
-        System.out.println(
-            "P" + p.getPatientId()
-            + " is trying to enter the waiting room."
-        );
+        boolean seatAcquired = emptySeats.tryAcquire(0);
 
-        // Wait if there is no available seat
-        emptySeats.acquire();
+        if (!seatAcquired) {
+
+            System.out.println("The waiting room is full.");
+
+            System.out.println(
+                "P" + p.getPatientId()
+                + " is waiting outside for an available seat."
+            );
+
+            emptySeats.acquire();
+        }
 
         synchronized (queueLock) {
 
@@ -39,38 +45,24 @@ public class WaitingRoom {
             );
         }
 
-        // Notify doctors that a patient is available
         availablePatients.release();
     }
 
-    // Doctor takes a patient from the waiting room
-    public Patient getPatient(int doctorid) throws InterruptedException {
+    public Patient getPatient(int doctorId)
+            throws InterruptedException {
 
-        // Wait if there are no patients
-        availablePatients.tryAcquire(3000);
+        availablePatients.acquire();
 
         Patient p;
 
         synchronized (queueLock) {
-
             p = patients.poll();
-
-            System.out.println(
-                "Doctor"+doctorid+ " took P" + p.getPatientId()
-                + " from the waiting room."
-            );
         }
 
-        // Release the seat after taking the patient
         emptySeats.release();
 
         return p;
     }
 
-    public int getSize() {
-
-        synchronized (queueLock) {
-            return patients.size();
-        }
-    }
+ 
 }
