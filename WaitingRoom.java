@@ -21,7 +21,7 @@ public class WaitingRoom {
 
     public void enter(Patient p) throws InterruptedException {
 
-        boolean seatAcquired = emptySeats.tryAcquire(0);
+        boolean seatAcquired = emptySeats.tryAcquire();
 
         if (!seatAcquired) {
 
@@ -63,6 +63,4 @@ public class WaitingRoom {
 
         return p;
     }
-
- 
 }
